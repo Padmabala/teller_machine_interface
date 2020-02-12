@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CustomInputField=({id="",customInputLabel="",value="",message="",onFieldChange=null,onSubmit=null})=>{
+const TransactionForm=({id="",customInputLabel="",value="",message="",onFieldChange=null,onSubmit=null})=>{
     const changeHandler=(event)=>{
         onFieldChange(event,id)
     }
@@ -22,7 +22,7 @@ const CustomInputField=({id="",customInputLabel="",value="",message="",onFieldCh
         </div>
     )
 }
-CustomInputField.propTypes={
+TransactionForm.propTypes={
     id:PropTypes.string.isRequired,
     customInputLabel:PropTypes.string.isRequired,
     value:PropTypes.string.isRequired,
@@ -30,4 +30,4 @@ CustomInputField.propTypes={
     message:PropTypes.string.isRequired,
     validateUser:PropTypes.func.isRequired
 }
-export default CustomInputField;
+export default TransactionForm;

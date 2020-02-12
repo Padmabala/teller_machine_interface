@@ -2,7 +2,7 @@
 import { PRIMARY_SERVER } from '../constants/serverUrls';
 
 
-export const updateAccount=(route,method,body)=>{
+export const postDetails=(route,method,body)=>{
     const requestUrl=PRIMARY_SERVER + route;
     return new Promise((resolve,reject)=>{
         const headers=new Headers({
@@ -16,6 +16,7 @@ export const updateAccount=(route,method,body)=>{
         };
         fetch(requestUrl,requestConfig)
         .then(data=>{
+            console.log("Heeeeeeeeeeeeeeeeeeeeeeeere is the detail",data);
             resolve(data);
         })
         .catch(error=>{

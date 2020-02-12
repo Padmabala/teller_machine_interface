@@ -3,52 +3,49 @@ import { Route,Redirect } from 'react-router-dom';
 
 import routes from "./routes/routes";
 import Home from './Pages/Home/home';
-import CustomInputField from './CommonComponents/CustomInputField';
+
 import WithdrawCash from './Pages/WithdrawCash/withdrawCash';
 import depositCash from './Pages/DepositCash/depositCash';
 import ChangePIN from "./Pages/ChangePIN/changePin"
 import checkBalance from './Pages/CheckBalance/checkBalance';
+import Login from './Pages/Login/login';
+import Logout from './Pages/Logout/logout';
+
 
 class App extends Component{
   state={
-    customerId:"",
     validUser:true,
     message:""
   }
-  onFieldChange=(event,targetField)=>{
-    this.setState({
-      [targetField]:event.target.value
-    })
-  }
-  validateUser=(event)=>{
-    this.setState({
-      message:"Incorrect Customer Id/PIN",
-      validUser:false
-    })
-    // this.setState({
-    //   validUser:true
-    // })
-    
-  }
   
+  IsValidUser=(isValid,message)=>{
+    this.setState({
+      validUser:isValid,
+      message
+    })
+  }
   render(){
-    const {customerId,validUser,message}=this.state;
-    return (
-      <div className="App">
+    const {validUser,message}=this.state;
+   
+  return(
+      <div className="form-group">
           {
 
             validUser
             ?
             <Redirect to={routes.home}/>
+            
             :
-            <CustomInputField id={"customerId"} customInputLabel={"Your Customer Id"} value={customerId} 
-                              message={message} onFieldChange={this.onFieldChange} onSubmit={this.validateUser}></CustomInputField>
+
+            <Login message={message} IsValidUser={this.IsValidUser}/>
           }
           <Route path={routes.home} component={Home}/>
                 <Route path={routes.withdraw} component={WithdrawCash}/>
                 <Route path={routes.deposit} component={depositCash}/>
                 <Route path={routes.changePIN} component={ChangePIN}/>
                 <Route path={routes.checkBalance} component={checkBalance}/>
+                <Route path={routes.login} component={Login}/>
+                
       </div>
     );
   }

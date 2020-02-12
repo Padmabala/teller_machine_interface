@@ -1,49 +1,65 @@
 import React,{Component} from 'react';
-import CustomInputField from '../../CommonComponents/CustomInputField';
+import { postDetails } from '../../services/postDetails';
+import { CHANGE_PIN_API } from '../../constants/serverUrls';
+import {NavLink} from 'react-router-dom';
+import routes from '../../routes/routes';
 class ChangePIN extends Component
 {
     state={
-        pin:"",
+        oldPin:"",
+        newPin:"",
         isValid:false,
-        inputLabel:"Enter the Old PIN",
         message:""
     }
-    addAmount=()=>{
-        this.clear();
-    }
-    onFieldChange=(event,targetField)=>{
+    onOldPinFieldChange=(event)=>{
         this.setState({
-          [targetField]:event.target.value
+          oldPin:event.target.value
         })
       }
-    validate=(event)=>{
-        if(this.state.isValid){
-            // this.setState({
-        //     isValid:false,
-        //      message:"You have entered a incorrect old PIN"
-        // })
-        }
-        else{
-            this.setState({
-                isValid:true,
-                inputLabel:"Enter the New PIN",
-                message:"Your PIN is updated"
+      onNewPinFieldChange=(event)=>{
+        this.setState({
+          newPin:event.target.value
         })
-        }
+      }
+    validate=async(event)=>{
+        const {oldPin,newPin}=this.state;
+            const requestBody = {
+                oldPin,
+                newPin
+            };
+            const resp = await postDetails(CHANGE_PIN_API, "POST", requestBody);
+            if(resp.status===200){
+                this.setState({message:"Your Pin has been updated"})
+            }
+            else{
+                this.setState({message:"Incorrect Old Pin or something went wrong. Please check at Bank POC"})
+            }
+            this.clear(); 
     }
     clear=()=>{
         this.setState({
-            amount:0
+            oldPin:"",
+            newPin:""
         })
     }
     render(){
-        const {amount,isDeposited,inputLabel,pin,message}=this.state;
+        const {oldPin,newPin,message}=this.state;
+        const divStyle={
+            position:'fixed',top:'20%',left: '30%',width:'30em',height:'18em','text-align':'center',padding:'70px',border: '1px solid'
+        }
         return(
-            <div>
+            <div className="form-group" style={divStyle}>    
+                <label htmlFor="oldPin">Enter the Old Pin</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input  type="text" id={oldPin} value={oldPin} required={true} onChange={this.onOldPinFieldChange} />
                 
-                <CustomInputField id={"amount"} customInputLabel={inputLabel} value={pin} onFieldChange={this.onFieldChange} 
-                                    message={message} onSubmit={this.validate}></CustomInputField>
-                
+                <label htmlFor="newPin">Enter the New Pin</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input  type="text" id={newPin} value={newPin} required={true} onChange={this.onNewPinFieldChange} />
+
+                <br/><br/>
+                   <button onClick={this.validate} align='center'>Submit</button>
+                <br/><br/>
+                <div align="center">{message}</div>
+                <NavLink to={routes.home}>Go to Home Page</NavLink>
             </div>
         )
     }
