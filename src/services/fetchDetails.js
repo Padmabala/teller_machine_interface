@@ -3,9 +3,8 @@ const fetchData=(route,method)=>{
     const requestUrl=PRIMARY_SERVER + route;
     return new Promise((resolve,reject)=>{
         fetch(requestUrl)
-        .then(response=>response.json())
-        .then(data=>{
-            resolve(data);
+        .then(response=>{
+            resolve(response)
         })
         .catch(error=>{
             reject(error);

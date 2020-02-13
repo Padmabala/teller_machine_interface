@@ -5,6 +5,8 @@ const routes={
     changePIN:'/changePIN',
     checkBalance:'/checkBalance',
     login:'/login',
-    logout:'/logout'
+    logout:'/logout',
+    newUser:'/newUser',
+    welcome:'/welcome',
 }
 export default routes;

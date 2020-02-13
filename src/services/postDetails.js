@@ -16,7 +16,6 @@ export const postDetails=(route,method,body)=>{
         };
         fetch(requestUrl,requestConfig)
         .then(data=>{
-            console.log("Heeeeeeeeeeeeeeeeeeeeeeeere is the detail",data);
             resolve(data);
         })
         .catch(error=>{

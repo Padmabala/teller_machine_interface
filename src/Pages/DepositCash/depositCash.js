@@ -1,9 +1,6 @@
 import React,{Component} from 'react';
 import TransactionForm from '../../CommonComponents/TransactionForm';
-// import { bindActionCreators } from 'redux';
-// import { depositMoney } from '../../redux/actions/transactionActions';
-// import { connect } from 'react-redux';
-import {NavLink} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import routes from '../../routes/routes';
 import { postDetails } from '../../services/postDetails';
 import { DEPOSIT_MONEY_API } from '../../constants/serverUrls';
@@ -12,22 +9,12 @@ class depositCash extends Component
     state={
         amount_deposited:0,
         isDeposited:false,
-        message:""
+        message:"",
+        reLogin:false
     }
-    // componentDidUpdate(prevProps,prevState){
-    //     console.log(this.props.amount);
-    //     if(prevProps.amount!==this.props.amount){
-    //     if(prevProps.amount+parseInt(prevState.amount_to_deposit)===this.props.amount){
-    //         this.setState({message:"Money Deposited"})
-    //         console.log(this.props.amount);
-    //     }
-    //     else{
-    //         this.setState({message:"Something went wrong"})
-    //         }
-    //     }
-    // }
     addAmount=async()=>{
         const {amount_to_deposit}=this.state;
+        if(Number.isInteger(parseInt(amount_to_deposit))){
             const requestBody = {
                 amount:parseInt(amount_to_deposit)
             };
@@ -35,16 +22,20 @@ class depositCash extends Component
             if(resp.status===200){
                 this.setState({message:"Money Deposited"})
             }
+            else if(resp.status===440){
+                this.setState({
+                    reLogin:true
+                })
+            }
             else{
                 this.setState({message:"Something went wrong"})
             }
+        }
+        else{
+            this.setState({message:"Please enter only numbers"})
+        }
+            this.clear();
     }
-    // addAmount=()=>{
-    //     const {amount_deposited}=this.state;
-    //     const {depositMoney}=this.props;
-    //     depositMoney(amount_deposited);
-    //     this.clear();   
-    // }
     onFieldChange=(event,targetField)=>{
         this.setState({
           [targetField]:event.target.value
@@ -60,24 +51,24 @@ class depositCash extends Component
         
     }
     render(){
-        const {amount_to_deposit,message}=this.state;
+        const {amount_to_deposit,message,reLogin}=this.state;
         return(
             <div>
+                {
+                reLogin
+                ?
+                <Redirect to={{
+                    pathname:routes.login,
+                    state:{validUser:false,message:"Your Session has expired ! Please Login again"}}}/>
+                :
+                <>
                 <TransactionForm id={"amount_to_deposit"} customInputLabel={"Enter the Amount"} value={amount_to_deposit} onFieldChange={this.onFieldChange} 
                                     message={message}onSubmit={this.addAmount}></TransactionForm>
-                <NavLink to={routes.home}>Go to Home Page</NavLink>
+                
+                </>
+                }
             </div>
         )
     }
 }
-// const mapStateToProps=(state)=>{
-//     return({
-//         amount:state.amount
-//     })
-// }
-// const mapDispatchToProps=(dispatch)=>{
-//     return({
-//         depositMoney:bindActionCreators(depositMoney,dispatch)
-//     })
-// }
 export default depositCash;

@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { NavLink} from 'react-router-dom';
+import routes from "../routes/routes";
+
 
 const TransactionForm=({id="",customInputLabel="",value="",message="",onFieldChange=null,onSubmit=null})=>{
     const changeHandler=(event)=>{
@@ -19,6 +22,8 @@ const TransactionForm=({id="",customInputLabel="",value="",message="",onFieldCha
             <button onClick={onClickSubmit} align='center'>Submit</button>
             <br/><br/>
             <div align="center">{message}</div>
+            <NavLink to={{pathname:routes.home,
+                                state:{validUser:true}}}>Go to Home Page</NavLink>
         </div>
     )
 }

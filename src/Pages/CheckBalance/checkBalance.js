@@ -1,45 +1,66 @@
 import React,{Component} from 'react';
-
-import PropTypes from 'prop-types';
-import {NavLink} from 'react-router-dom';
+import {NavLink,Redirect} from 'react-router-dom';
 import routes from '../../routes/routes';
 import fetchData from "../../services/fetchDetails"
 import { GET_BALANCE_API } from '../../constants/serverUrls';
 class checkBalance extends Component{
     state={
-        amount:""
+        message:"",
+        reLogin:false
     }
 
-    componentDidMount(){
-        fetchData(GET_BALANCE_API,"GET")
-            .then((resp)=>{
-                this.setState({
-                    amount:resp
-                })
-            })
-            .catch(error=>{
-                console.log(error)
-                this.setState({
-                    amount:"Something went wrong. Try again later"
-                })
-            })
-        
+    constructor(props){
+        super(props);
+        this.getBalance();
+    }
 
+    async getBalance(){
+        const response =await fetchData(GET_BALANCE_API,"GET");
+        if(response.status===440){
+            this.setState({
+                reLogin:true
+            })
+        }
+        else if(response.status===200){
+            const data=await response.json();
+            this.setState({
+                message:"Your Balance is "+data
+            })
+        }
+        else{
+            this.setState({
+                message:"Something went wrong. Try again later"
+            })
+        }        
     }
 
     render(){
-        const {amount}=this.state;
+        const {message,reLogin}=this.state;
         const divStyle={
             position:'fixed',top:'20%',left: '30%',width:'30em',height:'18em','text-align':'center',padding:'70px',border: '1px solid'
         }
         return(
-            <div className="form-group" style={divStyle}>    
-                Your Balance is {amount}
+            <div>
+                {
+                reLogin
+                ?
+                <Redirect to={{
+                    pathname:routes.login,
+                    state:{validUser:false,message:"Your Session has expired ! Please Login again"}}}/>
+                :
+                <div className="form-group" style={divStyle}>    
+            
+                {message}
 
                 <br/><br/><br/>
-                <NavLink to={routes.home}>Go to Home Page</NavLink>
+                <NavLink to={{pathname:routes.home,
+                                state:{validUser:true}}}>Go to Home Page</NavLink>
+
+                </div>
+                }
 
             </div>
+            
             
         )
     }
