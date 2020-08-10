@@ -20,7 +20,7 @@ class depositCash extends Component
             };
             const resp = await postDetails(DEPOSIT_MONEY_API, "POST", requestBody);
             if(resp.status===200){
-                this.setState({message:"Money Deposited"})
+                this.setState({message:"Money is Deposited"})
             }
             else if(resp.status===440){
                 this.setState({
